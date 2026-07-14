@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horus Heresy Book Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Oswald:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+  :root{
+    --void:#0c0b09;
+    --void-2:#151310;
+    --parch:#e9e2d0;
+    --parch-dim:#a89f8c;
+    --brass:#8a7a4e;
+    --brass-dim:#4a4230;
+    --blood:#8f2020;
+    --blood-bright:#c1372f;
+    --line:#332e24;
+    --gunmetal:#23261f;
+    --wax:#4a0d0d;
+    --rivet:#6b6152;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, #1c1712 0%, transparent 60%),
+      radial-gradient(ellipse 1200px 900px at 50% 50%, transparent 40%, #000 130%),
+      var(--void);
+    color:var(--parch);
+    font-family:'IBM Plex Serif', serif;
+    min-height:100vh;
+    padding:0 0 80px 0;
+    position:relative;
+  }
+
+  .hazard-bar{
+    height:7px;
+    width:100%;
+    background:repeating-linear-gradient(
+      -45deg,
+      var(--brass-dim) 0px, var(--brass-dim) 12px,
+      #000 12px, #000 24px
+    );
+  }
+
+  .grain{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:0.5;
+    mix-blend-mode:overlay;
+    filter:url(#grainFilter);
+  }
+
+  .wrap{max-width:640px;margin:0 auto;padding:0 20px;position:relative;z-index:2;}
+
+  /* header */
+  header{
+    padding:48px 20px 28px 20px;
+    text-align:center;
+    border:1px solid var(--line);
+    border-top:none;
+    border-left:none;
+    border-right:none;
+    background:
+      linear-gradient(180deg, rgba(143,32,32,0.08), transparent 70%);
+    position:relative;
+    overflow:hidden;
+  }
+  header::before, header::after{
+    content:'';
+    position:absolute;
+    top:14px;
+    width:6px;height:6px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #cfc4a8, var(--rivet) 60%, #2a2419 100%);
+    box-shadow:0 1px 2px rgba(0,0,0,0.6);
+  }
+  header::before{left:14px;}
+  header::after{right:14px;}
+  .aquila{
+    position:absolute;
+    top:-10px;
+    left:50%;
+    transform:translateX(-50%);
+    width:260px;
+    height:auto;
+    opacity:0.07;
+    z-index:0;
+  }
+
+  .about-note{
+    max-width:640px;
+    margin:26px auto 0 auto;
+    padding:16px 20px 6px 20px;
+    text-align:justify;
+    font-family:'IBM Plex Serif', serif;
+    font-style:italic;
+    font-size:15px;
+    line-height:1.65;
+    color:var(--parch-dim);
+    border-top:1px dashed var(--line);
+    position:relative;
+    z-index:1;
+  }
+
+  .tag-legend{
+    max-width:640px;
+    margin:16px auto 0 auto;
+    padding:14px 20px 22px 20px;
+    border-bottom:1px dashed var(--line);
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:max-content 1fr;
+    column-gap:16px;
+    row-gap:12px;
+    align-items:start;
+  }
+  .legend-badge{
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+    align-items:center;
+    padding-top:1px;
+  }
+  .legend-desc{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--parch-dim);
+    line-height:1.5;
+    padding-top:2px;
+  }
+  .legend-badge .item-ref, .legend-badge .item-tag, .legend-badge .item-cat{margin:0;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:var(--brass);
+    text-transform:uppercase;
+    margin-bottom:10px;
+    line-height:1.5;
+    padding:0 8px;
+    position:relative;
+    z-index:1;
+  }
+  h1{
+    font-family:'Pirata One', serif;
+    font-weight:400;
+    letter-spacing:0.02em;
+    font-size:clamp(38px,10vw,58px);
+    margin:0 0 6px 0;
+    color:var(--parch);
+    line-height:1;
+    position:relative;
+    z-index:1;
+    text-shadow:0 0 18px rgba(143,32,32,0.35), 0 2px 0 #000;
+  }
+  .subtitle{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13.5px;
+    color:var(--parch-dim);
+    letter-spacing:0.02em;
+    position:relative;
+    z-index:1;
+  }
+
+  /* progress seal */
+  .seal-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    margin-top:26px;
+    position:relative;
+    z-index:1;
+  }
+  .seal{
+    position:relative;
+    width:84px;height:84px;
+    border-radius:50%;
+    flex-shrink:0;
+    filter:drop-shadow(0 3px 6px rgba(0,0,0,0.6));
+  }
+  .seal::after{
+    content:'';
+    position:absolute;
+    left:50%;
+    bottom:-9px;
+    transform:translateX(-50%);
+    width:14px;height:16px;
+    background:var(--wax);
+    clip-path:polygon(50% 100%, 0 20%, 20% 0, 80% 0, 100% 20%);
+  }
+  .seal svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .seal .bg{fill:none;stroke:var(--line);stroke-width:5;}
+  .seal .fg{fill:none;stroke:var(--blood-bright);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 0.5s ease;}
+  .seal .pct{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:17px;font-weight:600;color:var(--parch);
+  }
+  .seal-label{
+    text-align:left;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--parch-dim);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    line-height:1.7;
+  }
+  .seal-label b{color:var(--parch);font-size:14.5px;display:block;letter-spacing:0.02em;}
+
+  /* phases */
+  .phase{margin-top:38px;position:relative;z-index:1;}
+  .phase::before{
+    content:'✠';
+    display:block;
+    text-align:center;
+    color:var(--brass-dim);
+    font-size:13px;
+    margin-bottom:18px;
+    letter-spacing:0.3em;
+  }
+  .phase:first-of-type::before{display:none;}
+  .phase-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:4px;
+    padding-bottom:10px;
+    border-bottom:1px solid var(--line);
+  }
+  .phase-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:14px;
+    color:var(--blood-bright);
+    letter-spacing:0.1em;
+  }
+  .phase-title{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    font-size:18px;
+    color:var(--parch);
+  }
+  .phase-count{
+    margin-left:auto;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--parch-dim);
+  }
+
+  ul.items{list-style:none;margin:0;padding:0;}
+  li.item{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    padding:12px 2px;
+    border-bottom:1px dashed var(--line);
+    cursor:pointer;
+  }
+  li.item:last-child{border-bottom:none;}
+  li.item:hover{background:rgba(143,32,32,0.05);}
+
+  .box{
+    flex-shrink:0;
+    width:18px;height:18px;
+    border:1.5px solid var(--brass);
+    margin-top:2px;
+    position:relative;
+    transition:all 0.15s ease;
+  }
+  li.item.checked .box{background:var(--blood);border-color:var(--blood-bright);}
+  li.item.checked .box::after{
+    content:'☠';
+    position:absolute;
+    left:50%;top:50%;
+    transform:translate(-50%,-54%);
+    font-size:11px;
+    line-height:1;
+    color:var(--parch);
+  }
+
+  .item-text{flex:1;}
+  .item-ref{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    color:#39ff14;
+    background:#020602;
+    border:1px solid #1c5c14;
+    padding:1px 5px;
+    border-radius:1px;
+    margin-right:8px;
+    vertical-align:middle;
+    text-shadow:0 0 5px rgba(57,255,20,0.65), 0 0 1px rgba(57,255,20,0.9);
+  }
+  li.item.checked .item-ref{color:#1e6b12;border-color:#0e2e0a;background:transparent;text-shadow:none;}
+  .item-title{
+    font-size:16.5px;
+    color:var(--parch);
+    line-height:1.4;
+  }
+  li.item.checked .item-title{color:var(--parch-dim);text-decoration:line-through;text-decoration-color:var(--brass-dim);}
+  .item-tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--brass);
+    border:1px solid var(--brass-dim);
+    padding:1px 6px;
+    border-radius:2px;
+    margin-left:8px;
+    vertical-align:middle;
+  }
+  .item-tag.side{color:#7a9a8a;border-color:#3a4a42;}
+  .item-tag.opt{color:var(--parch-dim);border-color:var(--line);}
+  .item-tag.prm{color:#c9a13b;border-color:#5a4a1f;}
+  .item-tag.chr{color:#7a93a8;border-color:#3a4a52;}
+
+  .item-cat{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    font-weight:600;
+    letter-spacing:0.08em;
+    color:var(--void);
+    background:var(--brass);
+    padding:1.5px 6px;
+    border-radius:2px;
+    margin-left:8px;
+    vertical-align:middle;
+  }
+  li.item.checked .item-cat{background:var(--brass-dim);color:var(--parch-dim);}
+
+  .insight-toggle{
+    display:block;
+    margin-top:5px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--blood-bright);
+    letter-spacing:0.03em;
+    cursor:pointer;
+  }
+  .insight-toggle:hover{color:#e0574c;}
+  .insight-text{
+    display:none;
+    margin-top:6px;
+    padding:8px 10px;
+    background:rgba(0,0,0,0.4);
+    border-left:2px solid var(--blood-bright);
+    font-family:'IBM Plex Serif',serif;
+    font-style:italic;
+    font-size:14.5px;
+    line-height:1.55;
+    color:var(--parch);
+  }
+  .insight-text.expanded{display:block;}
+
+  /* archive section */
+  .archive-toggle{
+    margin-top:44px;
+    padding:16px 18px;
+    border:1px solid var(--line);
+    background:var(--gunmetal);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    cursor:pointer;
+    position:relative;
+  }
+  .archive-toggle::before, .archive-toggle::after{
+    content:'';
+    position:absolute;
+    top:8px;
+    width:5px;height:5px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #cfc4a8, var(--rivet) 60%, #2a2419 100%);
+  }
+  .archive-toggle::before{left:8px;}
+  .archive-toggle::after{right:8px;}
+
+  .mini-seal{
+    position:relative;
+    width:36px;height:36px;
+    flex-shrink:0;
+    margin:0 6px;
+  }
+  .mini-seal svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .mini-seal .bg{fill:none;stroke:var(--line);stroke-width:6;}
+  .mini-seal .fg{fill:none;stroke:var(--blood-bright);stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset 0.5s ease;}
+  .mini-seal .pct{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;font-weight:600;color:var(--parch);
+  }
+  .archive-toggle:hover{border-color:var(--brass-dim);}
+  .archive-toggle-title{
+    font-family:'Oswald',sans-serif;
+    font-size:16.5px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--parch-dim);
+  }
+  .archive-toggle-title small{
+    display:block;
+    font-family:'IBM Plex Serif',serif;
+    font-size:13.5px;
+    text-transform:none;
+    letter-spacing:0;
+    color:var(--parch-dim);
+    margin-top:4px;
+    font-style:italic;
+  }
+  .chevron{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--brass);
+    transition:transform 0.2s ease;
+    font-size:15px;
+  }
+  .chevron.open{transform:rotate(180deg);}
+
+  #archiveBody{display:none;margin-top:2px;}
+  #archiveBody .phase-head .phase-title{color:var(--parch-dim);}
+
+  footer{
+    margin-top:50px;
+    text-align:center;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--brass-dim);
+    letter-spacing:0.05em;
+  }
+  .reset-btn{
+    background:none;
+    border:1px solid var(--brass-dim);
+    color:var(--parch-dim);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:8px 16px;
+    margin-top:16px;
+    cursor:pointer;
+    border-radius:2px;
+  }
+  .reset-btn:hover{border-color:var(--blood-bright);color:var(--parch);}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <filter id="grainFilter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="noise"/>
+    <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0"/>
+  </filter>
+</svg>
+<div class="grain"></div>
+<div class="hazard-bar"></div>
+
+<div class="wrap">
+
+  <header>
+    <svg class="aquila" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 20 L92 40 L60 30 L40 55 L55 60 L30 75 L52 76 L38 100 L62 90 L58 112 L78 92 L86 112 L100 88 L114 112 L122 92 L142 112 L138 90 L162 100 L148 76 L170 75 L145 60 L160 55 L140 30 L108 40 Z"
+        stroke="#8a7a4e" stroke-width="1.4"/>
+      <circle cx="88" cy="46" r="3" stroke="#8a7a4e" stroke-width="1.4"/>
+      <circle cx="112" cy="46" r="3" stroke="#8a7a4e" stroke-width="1.4"/>
+    </svg>
+    <div class="eyebrow">In the grim darkness of the far future, there is only war</div>
+    <h1>Horus Heresy Book Guide</h1>
+    <div class="subtitle">The Ultimate Reading Guide</div>
+
+    <div class="seal-row">
+      <div class="seal">
+        <svg viewBox="0 0 100 100">
+          <circle class="bg" cx="50" cy="50" r="42"></circle>
+          <circle class="fg" id="sealFg" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="264"></circle>
+        </svg>
+        <div class="pct" id="pctText">0%</div>
+      </div>
+      <div class="seal-label">
+        <b id="countText">0 / 0</b>
+        compliance entries<br>confirmed
+      </div>
+    </div>
+  </header>
+
+  <div class="about-note">
+    This is not the full fifty-four volume chronicle of the Heresy — it is the sanctioned compliance path, drawn from review scores and community consensus rather than one reader's judgement alone. It carries you through the best of the saga: the plot-critical spine, each primarch's own account entered into the record at the exact hour his legion turns, and the side campaigns worth the detour along the way. Three off-world postings — Eisenhorn, Night Lords, and Gaunt's Ghosts — are scheduled into the quieter administrative stretches so the vigil doesn't stall. Entries marked optional still hold their place in the path — skip one and nothing later goes unexplained. Volumes struck from the record entirely are a different matter: they sit sealed in the archive below, and reinstating one means finding its place yourself. Mark an entry complete and the servitors note it for the record.
+  </div>
+
+  <div class="tag-legend">
+    <div class="legend-badge"><span class="item-ref">HH·07</span></div>
+    <div class="legend-desc">Series and position — HH mainline, SoT Siege of Terra, PRM Primarchs, CHR Characters, or a side-track code (EH/NL/GG).</div>
+
+    <div class="legend-badge"><span class="item-tag opt">optional</span></div>
+    <div class="legend-desc">Strengthens the read. Skip it and the plot loses nothing.</div>
+
+    <div class="legend-badge"><span class="item-tag side">side-track</span></div>
+    <div class="legend-desc">A full detour into an unrelated series, dropped in as a breather.</div>
+
+    <div class="legend-badge"><span class="item-tag prm">primarch</span></div>
+    <div class="legend-desc">A primarch's own origin novella, placed at the hour he matters.</div>
+
+    <div class="legend-badge"><span class="item-tag chr">character</span></div>
+    <div class="legend-desc">A named non-primarch figure's standalone novella.</div>
+
+    <div class="legend-badge">
+      <span class="item-cat">PIVOT</span><span class="item-cat">SETUP</span><span class="item-cat">POV</span><span class="item-cat">ARC</span>
+    </div>
+    <div class="legend-desc">Why a mandatory entry earned its place. Tap "why this matters" beneath any entry for the spoiler-free reason.</div>
+  </div>
+
+  <main id="core"></main>
+
+  <div class="archive-toggle" id="archiveToggle">
+    <div class="archive-toggle-title">
+      Purged From The Record
+      <small>Struck from the compliance log. Reinstate at will.</small>
+    </div>
+    <div class="mini-seal">
+      <svg viewBox="0 0 100 100">
+        <circle class="bg" cx="50" cy="50" r="42"></circle>
+        <circle class="fg" id="archiveSealFg" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="264"></circle>
+      </svg>
+      <div class="pct" id="archivePctText">0%</div>
+    </div>
+    <div class="chevron" id="chevron">▾</div>
+  </div>
+  <div id="archiveBody"></div>
+
+  <footer>
+    <div style="font-style:italic;color:var(--parch-dim);margin-bottom:10px;opacity:0.8;">
+      In the grim darkness of the far future, there is only reading.
+    </div>
+    <div id="storageBackend" style="margin-top:6px;opacity:0.7;"></div>
+    <button class="reset-btn" id="resetBtn">Purge Compliance Record</button>
+  </footer>
+
+</div>
+
+<script>
+const CORE = [
+  { phase: "I", title: "The Fall", items: [
+    { id:"p1-1", t:"Horus Rising", ref:"HH·01", cat:"POV", why:"Establishes the perspective the whole saga reads through, and the status quo everything after breaks from." },
+    { id:"p1-2", t:"False Gods", ref:"HH·02", cat:"PIVOT", why:"The hinge the entire saga turns on sits in this book — every later volume is measured against it." },
+    { id:"p1-3", t:"Galaxy in Flames", ref:"HH·03", cat:"PIVOT", why:"Closes the opening arc and sets the terms of the war that follows for the next fifty books." },
+    { id:"p1-4", t:"Flight of the Eisenstein", ref:"HH·04", cat:"SETUP", why:"Sends a warning toward Terra that the back half of the saga has been waiting on since page one." },
+    { id:"p1-5", t:"Fulgrim", ref:"HH·05", tag:"optional" },
+    { id:"p1-6", t:"Legion", ref:"HH·07", cat:"ARC", why:"Introduces a Legion whose loyalties stay deliberately unclear for the rest of the series." },
+    { id:"p1-7", t:"Eisenhorn: Xenos", ref:"EH·01", tag:"side-track" },
+  ]},
+  { phase: "II", title: "Prospero", items: [
+    { id:"p2-0", t:"Tales of Heresy — anthology (Blood Games, The Last Church, After Desh'ea)", ref:"HH·10", tag:"optional" },
+    { id:"p2-1", t:"A Thousand Sons", ref:"HH·12", cat:"ARC", why:"Gives one Legion's fall its fullest, most sympathetic treatment — the emotional baseline for everything that Legion does later." },
+    { id:"p2-2", t:"Magnus the Red: Master of Prospero", ref:"PRM·03", tag:"primarch" },
+    { id:"p2-3", t:"Prospero Burns", ref:"HH·15", cat:"POV", why:"Tells the same events from the other side. Reading both perspectives back to back is the point." },
+    { id:"p2-4", t:"The First Heretic", ref:"HH·14", cat:"PIVOT", why:"Answers why the Heresy actually started — the philosophical engine behind everything else in the series." },
+    { id:"p2-5", t:"Lorgar: Bearer of the Word", ref:"PRM·05", tag:"primarch" },
+  ]},
+  { phase: "III", title: "Calth & Ultramar", items: [
+    { id:"p3-1", t:"Know No Fear", ref:"HH·19", cat:"PIVOT", why:"The war goes fully overt here. Nothing after this book pretends the Heresy is containable." },
+    { id:"p3-2", t:"Roboute Guilliman: Lord of Ultramar", ref:"PRM·01", tag:"primarch" },
+    { id:"p3-3", t:"Betrayer", ref:"HH·24", cat:"ARC", why:"One Legion's descent gets its defining chapter here — later books assume you understand what happened to them." },
+    { id:"p3-4", t:"Angron: Slave of Nuceria", ref:"PRM·11", tag:"primarch" },
+    { id:"p3-5", t:"Night Lords: Soul Hunter", ref:"NL·01", tag:"side-track" },
+  ]},
+  { phase: "IV", title: "Imperium Secundus", items: [
+    { id:"p4-1", t:"The Unremembered Empire", ref:"HH·27", cat:"SETUP", why:"Opens a political thread that stays load-bearing all the way through the Siege of Terra." },
+    { id:"p4-1b", t:"Vengeful Spirit", ref:"HH·29", tag:"optional" },
+    { id:"p4-2", t:"Pharos", ref:"HH·34", tag:"optional" },
+    { id:"p4-3", t:"Ruinstorm", ref:"HH·46", tag:"optional" },
+    { id:"p4-4", t:"Angels of Caliban", ref:"HH·38", tag:"optional" },
+    { id:"p4-5", t:"Gaunt's Ghosts: The Founding Omnibus", ref:"GG·01", tag:"side-track" },
+  ]},
+  { phase: "V", title: "March on Terra", items: [
+    { id:"p5-1", t:"Praetorian of Dorn", ref:"HH·39", cat:"SETUP", why:"Builds the fortifications and command relationships you'll spend the entire Siege of Terra inside." },
+    { id:"p5-2", t:"Perturabo: The Hammer of Olympia", ref:"PRM·04", tag:"primarch" },
+    { id:"p5-3", t:"The Master of Mankind", ref:"HH·41", cat:"ARC", why:"Fills in the Emperor's own inner circle right before they matter most." },
+    { id:"p5-4", t:"Valdor: Birth of the Imperium", ref:"CHR", tag:"character" },
+    { id:"p5-5", t:"Old Earth", ref:"HH·47", tag:"optional" },
+    { id:"p5-6", t:"The Burden of Loyalty", ref:"HH·48", tag:"optional" },
+    { id:"p5-7", t:"Wolfsbane", ref:"HH·49", cat:"SETUP", why:"Sets Horus's condition heading into the endgame. Slaves to Darkness assumes you know this." },
+    { id:"p5-8", t:"Slaves to Darkness", ref:"HH·51", cat:"PIVOT", why:"The last exhale before Terra. Everything the Siege needs in place gets locked in here." },
+    { id:"p5-9", t:"Mortarion: The Pale King", ref:"PRM·15", tag:"primarch" },
+    { id:"p5-10", t:"Siege prequels: The Last Council / A Rose Watered with Blood", ref:"SoT·PRE", cat:"SETUP", why:"Cold-opens directly into the Siege with zero recap — read these right before Solar War, not earlier." },
+  ]},
+  { phase: "VI", title: "Siege of Terra", items: [
+    { id:"p6-1", t:"The Solar War", ref:"SoT·01", cat:"PIVOT", why:"The opening move of the final campaign — establishes the stakes and positions everyone starts from." },
+    { id:"p6-2", t:"The Lost and the Damned", ref:"SoT·02", cat:"SETUP", why:"Widens the cast inside the Palace right as the siege lines get drawn." },
+    { id:"p6-3", t:"The First Wall", ref:"SoT·03", cat:"PIVOT", why:"The defense's first real test — how it goes here shapes every book after." },
+    { id:"p6-4", t:"Saturnine", ref:"SoT·04", cat:"PIVOT", why:"A major front of the siege reaches its breaking point in this volume." },
+    { id:"p6-5", t:"Mortis", ref:"SoT·05", cat:"ARC", why:"Several defenders' arcs reach a decisive moment here." },
+    { id:"p6-6", t:"Warhawk", ref:"SoT·06", cat:"PIVOT", why:"The air and orbital war comes to a head, with consequences for the ground fight." },
+    { id:"p6-7", t:"Echoes of Eternity", ref:"SoT·07", cat:"SETUP", why:"The last pieces move into position before the finale trilogy." },
+    { id:"p6-8", t:"The End and the Death, Vol. I", ref:"SoT·08", cat:"PIVOT", why:"The finale. Everything the whole saga has been building toward resolves across these three volumes." },
+    { id:"p6-9", t:"The End and the Death, Vol. II", ref:"SoT·08" },
+    { id:"p6-10", t:"The End and the Death, Vol. III", ref:"SoT·08" },
+  ]},
+];
+
+const ARCHIVE = [
+  { phase: "—", title: "Mainline novels cut from the spine", items: [
+    { id:"a-1", t:"Descent of Angels", ref:"HH·06" },
+    { id:"a-2", t:"Battle for the Abyss", ref:"HH·08" },
+    { id:"a-3", t:"Mechanicum", ref:"HH·09" },
+    { id:"a-5", t:"Fallen Angels", ref:"HH·11" },
+    { id:"a-6", t:"Nemesis", ref:"HH·13" },
+    { id:"a-7", t:"Age of Darkness — anthology", ref:"HH·16" },
+    { id:"a-8", t:"The Outcast Dead", ref:"HH·17" },
+    { id:"a-9", t:"Deliverance Lost", ref:"HH·18" },
+    { id:"a-10", t:"The Primarchs — anthology", ref:"HH·20" },
+    { id:"a-11", t:"Fear to Tread", ref:"HH·21" },
+    { id:"a-12", t:"Shadows of Treachery — anthology", ref:"HH·22" },
+    { id:"a-13", t:"Angel Exterminatus", ref:"HH·23" },
+    { id:"a-14", t:"Mark of Calth — anthology", ref:"HH·25" },
+    { id:"a-15", t:"Vulkan Lives", ref:"HH·26" },
+    { id:"a-16", t:"Scars", ref:"HH·28" },
+    { id:"a-18", t:"The Damnation of Pythos", ref:"HH·30" },
+    { id:"a-19", t:"Legacies of Betrayal — anthology", ref:"HH·31" },
+    { id:"a-20", t:"Deathfire", ref:"HH·32" },
+    { id:"a-21", t:"War Without End — anthology", ref:"HH·33" },
+    { id:"a-22", t:"Eye of Terra — anthology", ref:"HH·35" },
+    { id:"a-23", t:"The Silent War — anthology", ref:"HH·37" },
+    { id:"a-24", t:"Corax — collection", ref:"HH·40" },
+    { id:"a-25", t:"Garro — collection", ref:"HH·42" },
+    { id:"a-26", t:"The Crimson King", ref:"HH·44" },
+    { id:"a-27", t:"Tallarn", ref:"HH·45" },
+    { id:"a-27b", t:"Shattered Legions — collection", ref:"HH·43" },
+    { id:"a-29", t:"Titandeath", ref:"HH·53" },
+    { id:"a-29b", t:"Born of Flame", ref:"HH·50" },
+    { id:"a-30", t:"The Buried Dagger", ref:"HH·54" },
+  ]},
+  { phase: "—", title: "Primarch novellas not slotted in", items: [
+    { id:"a-31", t:"Leman Russ: The Great Wolf", ref:"PRM·02" },
+    { id:"a-32", t:"Fulgrim: The Palatine Phoenix", ref:"PRM·06" },
+    { id:"a-33", t:"Ferrus Manus: The Gorgon of Medusa", ref:"PRM·07" },
+    { id:"a-34", t:"Jaghatai Khan: Warhawk of Chogoris", ref:"PRM·08" },
+    { id:"a-35", t:"Vulkan: Lord of Drakes", ref:"PRM·09" },
+    { id:"a-36", t:"Corax: Lord of Shadows", ref:"PRM·10" },
+    { id:"a-37", t:"Konrad Curze: The Night Haunter", ref:"PRM·12" },
+    { id:"a-38", t:"Lion El'Jonson: Lord of the First", ref:"PRM·13" },
+    { id:"a-39", t:"Alpharius: Head of the Hydra", ref:"PRM·14" },
+    { id:"a-40", t:"Rogal Dorn: The Emperor's Crusader", ref:"PRM·16" },
+    { id:"a-41", t:"Sanguinius: The Great Angel", ref:"PRM·17" },
+  ]},
+  { phase: "—", title: "Other character novellas", items: [
+    { id:"a-42", t:"Sigismund: The Eternal Crusader", ref:"CHR" },
+  ]},
+];
+
+const STORAGE_KEY = "hh-checklist-state";
+let state = {};
+
+// Detect whether we're running inside a Claude.ai artifact (window.storage
+// is injected by that runtime) or as a plain standalone HTML file. If
+// window.storage isn't present — e.g. opened directly, self-hosted, or
+// open-sourced — fall back to the browser's own localStorage so the
+// checklist still persists per-browser.
+const usingClaudeStorage =
+  (typeof window !== "undefined") &&
+  !!window.storage &&
+  typeof window.storage.get === "function" &&
+  typeof window.storage.set === "function";
+
+async function storageRead(key){
+  if(usingClaudeStorage){
+    try{
+      const res = await window.storage.get(key, false);
+      return res ? res.value : null;
+    }catch(e){
+      return null; // key not yet set, or a transient error
+    }
+  }
+  try{
+    return window.localStorage.getItem(key);
+  }catch(e){
+    return null; // e.g. storage disabled, private-browsing restrictions
+  }
+}
+
+async function storageWrite(key, value, attempts = 3){
+  for(let i = 0; i < attempts; i++){
+    try{
+      if(usingClaudeStorage){
+        await window.storage.set(key, value, false);
+      } else {
+        window.localStorage.setItem(key, value);
+      }
+      return true;
+    }catch(e){
+      console.error(`Storage write attempt ${i + 1} failed`, e);
+      if(i < attempts - 1){
+        await new Promise(r => setTimeout(r, 300 * (i + 1)));
+      }
+    }
+  }
+  return false;
+}
+
+function allCoreIds(){
+  return CORE.flatMap(p => p.items.map(i => i.id));
+}
+function allArchiveIds(){
+  return ARCHIVE.flatMap(p => p.items.map(i => i.id));
+}
+
+function renderSection(data, container){
+  container.innerHTML = "";
+  data.forEach(phase => {
+    const section = document.createElement("div");
+    section.className = "phase";
+
+    const head = document.createElement("div");
+    head.className = "phase-head";
+    head.innerHTML = `
+      ${phase.phase !== "—" ? `<span class="phase-num">${phase.phase}</span>` : ""}
+      <span class="phase-title">${phase.title}</span>
+      <span class="phase-count" data-count="${phase.items.map(i=>i.id).join(',')}"></span>
+    `;
+    section.appendChild(head);
+
+    const ul = document.createElement("ul");
+    ul.className = "items";
+    phase.items.forEach(item => {
+      const li = document.createElement("li");
+      li.className = "item";
+      li.dataset.id = item.id;
+      const tagClassMap = { "side-track":"side", "optional":"opt", "primarch":"prm", "character":"chr" };
+      const tagClass = tagClassMap[item.tag] || "";
+      let insightHtml = "";
+      if(item.why){
+        insightHtml = `
+          <span class="insight-toggle" data-role="toggle" data-id="${item.id}">▸ why this matters</span>
+          <div class="insight-text" data-role="text" id="insight-${item.id}">${item.why}</div>
+        `;
+      }
+      li.innerHTML = `
+        <div class="box"></div>
+        <div class="item-text">
+          ${item.ref ? `<span class="item-ref">${item.ref}</span>` : ""}
+          <span class="item-title">${item.t}</span>
+          ${item.tag ? `<span class="item-tag ${tagClass}">${item.tag}</span>` : ""}
+          ${item.cat ? `<span class="item-cat">${item.cat}</span>` : ""}
+          ${insightHtml}
+        </div>
+      `;
+      li.addEventListener("click", () => toggle(item.id));
+      if(item.why){
+        const toggleEl = li.querySelector(`[data-role="toggle"]`);
+        toggleEl.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const textEl = document.getElementById(`insight-${item.id}`);
+          const nowOpen = textEl.classList.toggle("expanded");
+          toggleEl.textContent = nowOpen ? "▾ why this matters" : "▸ why this matters";
+        });
+      }
+      ul.appendChild(li);
+    });
+    section.appendChild(ul);
+    container.appendChild(section);
+  });
+}
+
+function toggle(id){
+  state[id] = !state[id];
+  refreshUI();
+  scheduleSave();
+}
+
+function refreshUI(){
+  document.querySelectorAll("li.item").forEach(li => {
+    li.classList.toggle("checked", !!state[li.dataset.id]);
+  });
+  document.querySelectorAll(".phase-count").forEach(el => {
+    const ids = el.dataset.count.split(",");
+    const done = ids.filter(id => state[id]).length;
+    el.textContent = `${done}/${ids.length}`;
+  });
+
+  const coreIds = allCoreIds();
+  const coreDone = coreIds.filter(id => state[id]).length;
+  const pct = coreIds.length ? Math.round((coreDone/coreIds.length)*100) : 0;
+  document.getElementById("pctText").textContent = pct + "%";
+  document.getElementById("countText").textContent = `${coreDone} / ${coreIds.length}`;
+  const circumference = 264;
+  const offset = circumference - (pct/100)*circumference;
+  document.getElementById("sealFg").style.strokeDashoffset = offset;
+
+  const archIds = allArchiveIds();
+  const archDone = archIds.filter(id => state[id]).length;
+  const archPct = archIds.length ? Math.round((archDone/archIds.length)*100) : 0;
+  document.getElementById("archivePctText").textContent = archPct + "%";
+  const archOffset = circumference - (archPct/100)*circumference;
+  document.getElementById("archiveSealFg").style.strokeDashoffset = archOffset;
+}
+
+async function load(){
+  const raw = await storageRead(STORAGE_KEY);
+  if(raw){
+    try{ state = JSON.parse(raw); }
+    catch(e){ state = {}; }
+  }
+  renderSection(CORE, document.getElementById("core"));
+  renderSection(ARCHIVE, document.getElementById("archiveBody"));
+  refreshUI();
+  const backend = document.getElementById("storageBackend");
+  if(backend){
+    backend.textContent = usingClaudeStorage
+      ? "Archive Status: Synced to the Departmental Cogitator"
+      : "Archive Status: Local Cogitator Only (this device)";
+  }
+}
+
+async function save(){
+  const ok = await storageWrite(STORAGE_KEY, JSON.stringify(state));
+  const backend = document.getElementById("storageBackend");
+  if(!backend) return;
+  if(ok){
+    backend.textContent = usingClaudeStorage
+      ? "Archive Status: Synced to the Departmental Cogitator"
+      : "Archive Status: Local Cogitator Only (this device)";
+  } else {
+    backend.textContent = "Archive Status: Save failed — will retry on next change";
+  }
+}
+
+let saveDebounceTimer = null;
+function scheduleSave(){
+  clearTimeout(saveDebounceTimer);
+  saveDebounceTimer = setTimeout(save, 400);
+}
+
+document.getElementById("archiveToggle").addEventListener("click", () => {
+  const body = document.getElementById("archiveBody");
+  const chevron = document.getElementById("chevron");
+  const isOpen = body.style.display === "block";
+  body.style.display = isOpen ? "none" : "block";
+  chevron.classList.toggle("open", !isOpen);
+});
+
+let resetArmed = false;
+let resetArmTimeout = null;
+const resetBtn = document.getElementById("resetBtn");
+
+resetBtn.addEventListener("click", async () => {
+  if(!resetArmed){
+    resetArmed = true;
+    resetBtn.textContent = "Confirm Purge? Tap Again";
+    resetBtn.style.borderColor = "var(--blood-bright)";
+    resetBtn.style.color = "var(--parch)";
+    resetBtn.style.background = "rgba(143,32,32,0.25)";
+    clearTimeout(resetArmTimeout);
+    resetArmTimeout = setTimeout(() => {
+      resetArmed = false;
+      resetBtn.textContent = "Purge Compliance Record";
+      resetBtn.style.borderColor = "";
+      resetBtn.style.color = "";
+      resetBtn.style.background = "";
+    }, 4000);
+    return;
+  }
+  clearTimeout(resetArmTimeout);
+  resetArmed = false;
+  resetBtn.textContent = "Purge Compliance Record";
+  resetBtn.style.borderColor = "";
+  resetBtn.style.color = "";
+  resetBtn.style.background = "";
+  state = {};
+  await save();
+  refreshUI();
+});
+
+load();
+</script>
+</body>
+</html>
